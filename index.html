@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manual Transmission is Better for Fuel Economy</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Manual Transmission is Better for Fuel Economy">
+  <meta name="author" content="">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Manual Transmission is Better for Fuel Economy</h1>
+    <h2>A mini research report at mtcars dataset, devdataprods Course Project</h2>
+    <p><br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h3>Research Logistics</h3>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>This research tries to find out the automaticity of vehicles&#39; influence to fuel economy.</li>
+<li>Find a dataset includes the gauge of fuel economy, Miles per Gallon(<code>mpg</code>), and the automaticity of transmissions(<code>am</code>). The dataset is <code>mtcars</code>, extracted from 1974 <em>Motor Trend</em> US magazine, integrated in R <code>datasets</code> package.<br></li>
+</ul>
+
+<pre><code class="r">data(mtcars)
+</code></pre>
+
+<ul>
+<li>Firstly do some exploratory analysis. Plot the boxplot of <code>mpg</code> of <strong>two groups</strong> of samples, grouped by automaticity(<code>am</code>).</li>
+<li>Secondly make a series of deep analysis into the dataset. We will test the difference of the two grouped means against the <code>am</code> variable.</li>
+<li>Finally draw to the conclusion.</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h3>Exploratory Data Analysis: The Boxplot</h3>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">qplot(factor(am), mpg, data = mtcars, geom = &quot;boxplot&quot;, xlab = &quot;Automaticity, 0 = AT, 1 = MT&quot;, ylab = &quot;Miles Per Gallon&quot;)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-3.png" alt="plot of chunk unnamed-chunk-3"> </p>
+
+<p>These plot intuitively shows that the automaticity of transmissions does influences the fuel economy of the vehicles listed on the <code>mtcars</code> dataset.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h3>Deep Analysis: One-Way ANOVA</h3>
+  </hgroup>
+  <article data-timings="">
+    <p>ANOVA is used to analyze a factor&#39;s(<code>am</code>) influence towards the grouped outputs(<code>mpg</code>). We calculate the MSA and MSE of the dataset, then divide MSA by MSE and get the F ratio. Use the F test, if the null hypothesis is rejected, we can draw to the conclusion that the factor is significant. ANOVA is based on the assumption of homogeneity of variances. Let&#39;s test it first.<br>
+<strong>Test Methods: Bartlett Test of Homogeneity of Variances</strong> (alpha = 0.05)</p>
+
+<pre><code class="r">## The P-value is:
+bartlett.test(mpg ~ am, data = mtcars)$p.value
+</code></pre>
+
+<pre><code>## [1] 0.07248
+</code></pre>
+
+<p>P-Value larger than alpha, thus we accept the null hypothesis that the two grouped variance are similar.<br>
+Then we can do the main part of the analysis: One-Way ANOVA.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h3>Deep Analysis: One-Way ANOVA, and Conclusions</h3>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">summary(aov(mpg ~ am, data = mtcars))
+</code></pre>
+
+<pre><code>##             Df Sum Sq Mean Sq F value  Pr(&gt;F)    
+## am           1    405     405    16.9 0.00029 ***
+## Residuals   30    721      24                    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+</code></pre>
+
+<p>The p-value is significantly small, null hypothesis rejected. 
+Thus we will draw to the conclusion that the variable <code>am</code> influences the mean of different cars&#39; MPG.  </p>
+
+<p>BTW, the <strong>mean difference</strong> of <code>mpg</code> of the grouped models is:</p>
+
+<pre><code class="r">mean(subset(mtcars$mpg, mtcars$am == 1)) - mean(subset(mtcars$mpg, mtcars$am == 0))
+</code></pre>
+
+<pre><code>## [1] 7.245
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Research Logistics'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Exploratory Data Analysis: The Boxplot'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Deep Analysis: One-Way ANOVA'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Deep Analysis: One-Way ANOVA, and Conclusions'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
